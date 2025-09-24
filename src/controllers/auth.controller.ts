@@ -72,7 +72,9 @@ export const login = async (req: AuthRequest, res: Response) => {
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
-}; export const logout = async (_req: AuthRequest, res: Response) => {
+};
+
+export const logout = async (_req: AuthRequest, res: Response) => {
     // Since we're not storing refresh tokens in the database,
     // client is responsible for discarding the tokens
     res.json({ message: 'Logged out successfully' });

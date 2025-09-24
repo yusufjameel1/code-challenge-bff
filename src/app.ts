@@ -27,7 +27,14 @@ app.use(cors());
 app.use(express.json());
 
 // Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+    swaggerOptions: {
+        persistAuthorization: true,
+    },
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Code Challenge BFF API Documentation'
+}));
 
 // Auth routes (unprotected)
 app.use('/api/auth', authRoutes);
