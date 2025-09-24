@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
 import swaggerUi from 'swagger-ui-express';
 import authRoutes from './routes/auth.routes';
 import productRoutes from './routes/product.routes';
@@ -12,13 +11,6 @@ import { swaggerSpec } from './config/swagger.config';
 
 // Load environment variables
 dotenv.config();
-
-// MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/code-challenge-bff';
-
-mongoose.connect(MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((error) => console.error('MongoDB connection error:', error));
 
 // Create Express app
 const app = express();
@@ -51,7 +43,9 @@ app.use('/api', authenticateToken);
 // Basic route (protected)
 app.get('/', (_req: Request, res: Response) => {
     res.json({ message: 'Welcome to the API' });
-});// Error handling middleware
+});
+
+// Error handling middleware
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something went wrong!' });
@@ -62,8 +56,4 @@ app.use((_req: Request, res: Response) => {
     res.status(404).json({ error: 'Not found' });
 });
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+export default app;
