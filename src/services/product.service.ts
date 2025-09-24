@@ -1,8 +1,25 @@
 import { Product } from '../models/product.model';
 import { IProduct } from '../types/product.types';
 
-class ProductService {
-    async createProduct(productData: IProduct): Promise<IProduct> {
+export class ProductService {
+    private static instance: ProductService;
+
+    private constructor() { }
+
+    /**
+     * Get the singleton instance of ProductService
+     */
+    public static getInstance(): ProductService {
+        if (!ProductService.instance) {
+            ProductService.instance = new ProductService();
+        }
+        return ProductService.instance;
+    }
+
+    /**
+     * Create a new product
+     */
+    public async createProduct(productData: IProduct): Promise<IProduct> {
         const existingProduct = await Product.findOne({ sku: productData.sku });
         if (existingProduct) {
             throw new Error('Product with this SKU already exists');
@@ -47,5 +64,3 @@ class ProductService {
         return await Product.findByIdAndDelete(id);
     }
 }
-
-export const productService = new ProductService();

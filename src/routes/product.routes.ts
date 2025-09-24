@@ -1,15 +1,9 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth.middleware';
-import {
-    createProduct,
-    deleteProduct,
-    getProductById,
-    getProductBySku,
-    getProducts,
-    updateProduct,
-} from '../controllers/product.controller';
+import { ProductController } from '../controllers/product.controller';
 
 const router = Router();
+const productController = ProductController.getInstance();
 
 /**
  * @swagger
@@ -48,6 +42,9 @@ const router = Router();
  *           type: string
  *           format: date-time
  */
+
+// Apply authentication middleware to all pricing rule routes
+router.use(authenticateToken);
 
 /**
  * @swagger
@@ -89,7 +86,9 @@ const router = Router();
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authenticateToken, createProduct);
+
+
+router.post('/', (req, res) => productController.createProduct(req, res));
 
 /**
  * @swagger
@@ -101,15 +100,48 @@ router.post('/', authenticateToken, createProduct);
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of all products
+ *         description: List of products
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
+ *       401:
+ *         description: Unauthorized
  */
-router.get('/', authenticateToken, getProducts);
+router.get('/', (req, res) => productController.getAllProducts(req, res));
+
+/**
+ * @swagger
+ * /api/products/search:
+ *   get:
+ *     summary: Search for products
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Search query term
+ *     responses:
+ *       200:
+ *         description: List of matching products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Search term is required
+ *       401:
+ *         description: Unauthorized
+ */
+router.get('/search', (req, res) => productController.searchProducts(req, res));
 
 /**
  * @swagger
@@ -122,9 +154,9 @@ router.get('/', authenticateToken, getProducts);
  *     parameters:
  *       - in: path
  *         name: id
- *         required: true
  *         schema:
  *           type: string
+ *         required: true
  *         description: Product ID
  *     responses:
  *       200:
@@ -135,8 +167,10 @@ router.get('/', authenticateToken, getProducts);
  *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: Product not found
+ *       401:
+ *         description: Unauthorized
  */
-router.get('/:id', authenticateToken, getProductById);
+router.get('/:id', (req, res) => productController.getProduct(req, res));
 
 /**
  * @swagger
@@ -149,9 +183,9 @@ router.get('/:id', authenticateToken, getProductById);
  *     parameters:
  *       - in: path
  *         name: sku
- *         required: true
  *         schema:
  *           type: string
+ *         required: true
  *         description: Product SKU
  *     responses:
  *       200:
@@ -162,8 +196,10 @@ router.get('/:id', authenticateToken, getProductById);
  *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: Product not found
+ *       401:
+ *         description: Unauthorized
  */
-router.get('/sku/:sku', authenticateToken, getProductBySku);
+router.get('/sku/:sku', (req, res) => productController.getProductBySku(req, res));
 
 /**
  * @swagger
@@ -176,9 +212,9 @@ router.get('/sku/:sku', authenticateToken, getProductBySku);
  *     parameters:
  *       - in: path
  *         name: id
- *         required: true
  *         schema:
  *           type: string
+ *         required: true
  *         description: Product ID
  *     requestBody:
  *       required: true
@@ -189,13 +225,10 @@ router.get('/sku/:sku', authenticateToken, getProductBySku);
  *             properties:
  *               sku:
  *                 type: string
- *                 example: "PROD001"
  *               name:
  *                 type: string
- *                 example: "Updated Product Name"
  *               price:
  *                 type: number
- *                 example: 149.99
  *     responses:
  *       200:
  *         description: Product updated successfully
@@ -205,8 +238,10 @@ router.get('/sku/:sku', authenticateToken, getProductBySku);
  *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: Product not found
+ *       401:
+ *         description: Unauthorized
  */
-router.put('/:id', authenticateToken, updateProduct);
+router.put('/:id', (req, res) => productController.updateProduct(req, res));
 
 /**
  * @swagger
@@ -219,16 +254,20 @@ router.put('/:id', authenticateToken, updateProduct);
  *     parameters:
  *       - in: path
  *         name: id
- *         required: true
  *         schema:
  *           type: string
+ *         required: true
  *         description: Product ID
  *     responses:
- *       200:
+ *       204:
  *         description: Product deleted successfully
  *       404:
  *         description: Product not found
+ *       401:
+ *         description: Unauthorized
  */
-router.delete('/:id', authenticateToken, deleteProduct);
+router.delete('/:id', (req, res) => productController.deleteProduct(req, res));
+
+
 
 export default router;

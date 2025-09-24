@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import swaggerUi from 'swagger-ui-express';
 import authRoutes from './routes/auth.routes';
 import productRoutes from './routes/product.routes';
+import pricingRuleRoutes from './routes/pricing-rule.routes';
 import { authenticateToken } from './middleware/auth.middleware';
 import { swaggerSpec } from './config/swagger.config';
 
@@ -42,6 +43,7 @@ app.use('/api/auth', authRoutes);
 
 // Protected routes
 app.use('/api/products', productRoutes);
+app.use('/api/pricing-rules', pricingRuleRoutes);
 
 // Protected routes (general)
 app.use('/api', authenticateToken);

@@ -2,8 +2,25 @@ import { generateTokens, verifyRefreshToken } from '../utils/jwt.utils';
 import { User } from '../models/user.model';
 import { IAuthTokens, IUserDocument } from '../types/user.types';
 
-class AuthService {
-    async register(name: string, email: string, password: string): Promise<IUserDocument> {
+export class AuthService {
+    private static instance: AuthService;
+
+    private constructor() { }
+
+    /**
+     * Get the singleton instance of AuthService
+     */
+    public static getInstance(): AuthService {
+        if (!AuthService.instance) {
+            AuthService.instance = new AuthService();
+        }
+        return AuthService.instance;
+    }
+
+    /**
+     * Register a new user
+     */
+    public async register(name: string, email: string, password: string): Promise<IUserDocument> {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             throw new Error('User already exists');
@@ -64,5 +81,3 @@ class AuthService {
         }
     }
 }
-
-export const authService = new AuthService();

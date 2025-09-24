@@ -18,6 +18,10 @@ const options: swaggerJsdoc.Options = {
             {
                 name: 'Auth',
                 description: 'Authentication endpoints'
+            },
+            {
+                name: 'Pricing Rules',
+                description: 'Pricing rule management endpoints'
             }
         ],
         components: {

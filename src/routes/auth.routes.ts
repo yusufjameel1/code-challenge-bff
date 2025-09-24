@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { login, refreshToken, register } from '../controllers/auth.controller';
+import { AuthController } from '../controllers/auth.controller';
 
 const router = Router();
+const controller = AuthController.getInstance();
 
 /**
  * @swagger
@@ -65,7 +66,7 @@ const router = Router();
  *       500:
  *         description: Server error
  */
-router.post('/register', register);
+router.post('/register', (req, res) => controller.register(req, res));
 
 /**
  * @swagger
@@ -118,7 +119,7 @@ router.post('/register', register);
  *       500:
  *         description: Server error
  */
-router.post('/login', login);
+router.post('/login', (req, res) => controller.login(req, res));
 
 /**
  * @swagger
@@ -165,6 +166,6 @@ router.post('/login', login);
  *       500:
  *         description: Server error
  */
-router.post('/refresh-token', refreshToken);
+router.post('/refresh-token', (req, res) => controller.refreshToken(req, res));
 
 export default router;
