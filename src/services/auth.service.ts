@@ -1,7 +1,6 @@
+import { generateTokens, verifyRefreshToken } from '../utils/jwt.utils';
 import { User } from '../models/user.model';
-import { comparePasswords, hashPassword } from '../utils/auth.utils';
-import { IUser, IUserDocument, IAuthTokens } from '../types/user.types';
-import { generateTokens, verifyRefreshToken } from '../utils/token.utils';
+import { IAuthTokens, IUserDocument } from '../types/user.types';
 
 class AuthService {
     async register(name: string, email: string, password: string): Promise<IUserDocument> {
@@ -10,11 +9,10 @@ class AuthService {
             throw new Error('User already exists');
         }
 
-        const hashedPassword = await hashPassword(password);
         const user = new User({
             name,
             email,
-            password: hashedPassword,
+            password,
         });
 
         await user.save();
@@ -22,18 +20,23 @@ class AuthService {
     }
 
     async login(email: string, password: string): Promise<{ user: IUserDocument; tokens: IAuthTokens }> {
-        const user = await User.findOne({ email });
-        if (!user) {
-            throw new Error('Invalid credentials');
-        }
+        try {
+            const user = await User.findOne({ email });
+            if (!user) {
+                throw new Error('Invalid credentials');
+            }
 
-        const isPasswordValid = await user.comparePassword(password);
-        if (!isPasswordValid) {
-            throw new Error('Invalid credentials');
-        }
+            const isPasswordValid = await user.comparePassword(password);
 
-        const tokens = generateTokens(user);
-        return { user, tokens };
+            if (!isPasswordValid) {
+                throw new Error('Invalid credentials');
+            }
+
+            const tokens = generateTokens(user);
+            return { user, tokens };
+        } catch (error: any) {
+            throw error;
+        }
     }
 
     async refreshToken(userId: string): Promise<IAuthTokens> {

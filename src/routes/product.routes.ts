@@ -196,9 +196,6 @@ router.get('/sku/:sku', authenticateToken, getProductBySku);
  *               price:
  *                 type: number
  *                 example: 149.99
- *               inventory:
- *                 type: number
- *                 example: 75
  *     responses:
  *       200:
  *         description: Product updated successfully

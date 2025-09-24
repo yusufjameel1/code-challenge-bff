@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { register, login, logout, refreshToken } from '../controllers/auth.controller';
-import { authenticateToken } from '../middleware/auth.middleware';
+import { login, refreshToken, register } from '../controllers/auth.controller';
 
 const router = Router();
 
@@ -120,33 +119,6 @@ router.post('/register', register);
  *         description: Server error
  */
 router.post('/login', login);
-
-/**
- * @swagger
- * /api/auth/logout:
- *   post:
- *     tags: [Auth]
- *     summary: Logout user
- *     description: Logout the currently authenticated user
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Logout successful
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Logged out successfully
- *       401:
- *         description: Not authenticated
- *       500:
- *         description: Server error
- */
-router.post('/logout', authenticateToken, logout);
 
 /**
  * @swagger
