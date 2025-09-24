@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import swaggerUi from 'swagger-ui-express';
 import authRoutes from './routes/auth.routes';
+import productRoutes from './routes/product.routes';
 import { authenticateToken } from './middleware/auth.middleware';
 import { swaggerSpec } from './config/swagger.config';
 
@@ -40,6 +41,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 app.use('/api/auth', authRoutes);
 
 // Protected routes
+app.use('/api/products', productRoutes);
+
+// Protected routes (general)
 app.use('/api', authenticateToken);
 
 // Basic route (protected)

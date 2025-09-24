@@ -1,8 +1,13 @@
 import mongoose, { Schema } from 'mongoose';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { IUser, IUserDocument } from '../types/user.types';
 
 const userSchema = new Schema<IUserDocument>({
+    name: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     email: {
         type: String,
         required: true,
