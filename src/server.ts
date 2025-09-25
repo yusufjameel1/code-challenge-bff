@@ -1,9 +1,13 @@
 import app from './app';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import setupUtils from './utils/setup.utils';
+import Logger from './utils/logger.utils';
 
 // Load environment variables
 dotenv.config();
+
+const logger = Logger.getInstance();
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/code-challenge-bff';
@@ -17,31 +21,52 @@ const connectDB = async () => {
 
         // Create new connection
         await mongoose.connect(MONGODB_URI);
-        console.log('Connected to MongoDB');
+        logger.info('Connected to MongoDB');
+
+        // Initialize data after successful connection
+        await setupUtils.initializeData();
+        logger.info('Data initialization completed');
     } catch (error) {
-        console.error('MongoDB connection error:', error);
+        logger.error('MongoDB connection error:', error);
         process.exit(1);
     }
 };
 
-// Connect to MongoDB
-connectDB();
+// Initialize server variable in wider scope
+let server: ReturnType<typeof app.listen>;
 
-// Start server
-const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Start server function
+const startServer = async () => {
+    try {
+        // Connect to MongoDB and initialize data
+        await connectDB();
+
+        const PORT = process.env.PORT || 3000;
+        server = app.listen(PORT, () => {
+            logger.info(`Server is running on port ${PORT}`);
+        });
+
+        return server;
+    } catch (error) {
+        logger.error('Failed to start server:', error);
+        process.exit(1);
+    }
+};
 
 // Handle graceful shutdown
 process.on('SIGTERM', async () => {
-    console.log('SIGTERM signal received: closing HTTP server');
+    logger.info('SIGTERM signal received: closing HTTP server');
     await mongoose.disconnect();
-    server.close(() => {
-        console.log('HTTP server closed');
-        process.exit(0);
-    });
+    if (server) {
+        server.close(() => {
+            logger.info('HTTP server closed');
+            process.exit(0);
+        });
+    }
 });
+
+// Start the server
+startServer();
 
 process.on('SIGINT', async () => {
     console.log('SIGINT signal received: closing HTTP server');

@@ -26,7 +26,6 @@ const productSchema = new Schema<IProductDocument>(
 );
 
 // Index for faster lookups
-productSchema.index({ sku: 1 });
 productSchema.index({ name: 'text' });
 
 export const Product = mongoose.model<IProductDocument>('Product', productSchema);

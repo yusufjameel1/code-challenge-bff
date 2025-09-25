@@ -8,6 +8,7 @@ import productRoutes from './routes/product.routes';
 import pricingRuleRoutes from './routes/pricing-rule.routes';
 import { authenticateToken } from './middleware/auth.middleware';
 import { swaggerSpec } from './config/swagger.config';
+import setupUtils from './utils/setup.utils';
 
 // Load environment variables
 dotenv.config();
