@@ -20,16 +20,14 @@ export class AuthService {
     /**
      * Register a new user
      */
-    public async register(name: string, email: string, password: string): Promise<IUserDocument> {
-        const existingUser = await User.findOne({ email });
+    public async register(iUser: IUserDocument): Promise<IUserDocument> {
+        const existingUser = await User.findOne({ email: iUser.email });
         if (existingUser) {
             throw new Error('User already exists');
         }
 
         const user = new User({
-            name,
-            email,
-            password,
+            ...iUser
         });
 
         await user.save();

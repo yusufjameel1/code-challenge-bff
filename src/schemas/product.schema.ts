@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import mongoose from 'mongoose';
+
+const objectIdSchema = z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
+    message: 'Invalid ObjectId format'
+});
 
 export const createProductSchema = z.object({
     body: z.object({
@@ -15,13 +20,13 @@ export const updateProductSchema = z.object({
         price: z.number().min(0).optional(),
     }),
     params: z.object({
-        id: z.string().min(1, 'Product ID is required'),
+        id: objectIdSchema,
     }),
 });
 
 export const getProductByIdSchema = z.object({
     params: z.object({
-        id: z.string().min(1, 'Product ID is required'),
+        id: objectIdSchema,
     }),
 });
 
@@ -33,7 +38,7 @@ export const getProductBySkuSchema = z.object({
 
 export const deleteProductSchema = z.object({
     params: z.object({
-        id: z.string().min(1, 'Product ID is required'),
+        id: objectIdSchema,
     }),
 });
 

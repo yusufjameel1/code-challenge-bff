@@ -5,7 +5,7 @@ export const validateRequest = (schema: ZodSchema) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         const body = req.body || {};
         try {
-            const result = await schema.safeParse({
+            const result: any = await schema.safeParse({
                 body,
                 query: req.query,
                 params: req.params,
@@ -18,6 +18,8 @@ export const validateRequest = (schema: ZodSchema) => {
                 }
                 return res.status(400).json({ error: result.error.issues[0].message });
             }
+
+            req.body = result?.data?.body;
             next();
         } catch (error) {
             return res.status(500).json({ error: 'Internal server error' });

@@ -1,6 +1,7 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { AuthRequest } from '../types/request.types';
 import { AuthService } from '../services/auth.service';
+import { IUserDocument } from '@/types/user.types';
 
 export class AuthController {
     private static instance: AuthController;
@@ -23,10 +24,10 @@ export class AuthController {
     /**
      * Register a new user
      */
-    public async register(req: AuthRequest, res: Response): Promise<void> {
+    public async register(req: Request, res: Response): Promise<void> {
         try {
-            const { name, email, password } = req.body;
-            const user = await this.authService.register(name, email, password);
+            const iUser: IUserDocument = req.body;
+            const user = await this.authService.register(iUser);
             const tokens = await this.authService.refreshToken(user._id);
 
             res.status(201).json({

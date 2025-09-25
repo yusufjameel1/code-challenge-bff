@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import { AuthRequest } from '../types/request.types';
-import { Product } from '../models/product.model';
 import { ProductService } from '../services/product.service';
 
 export class ProductController {
@@ -26,21 +24,11 @@ export class ProductController {
      */
     public async createProduct(req: Request, res: Response): Promise<void> {
         try {
-            const product = new Product(req.body);
-            await product.save();
+            const product = await this.productService.createProduct(req.body);
             res.status(201).json(product);
         } catch (error: any) {
             console.error('[ProductController] Error creating product:', error);
-            if (error.code === 11000) {
-                res.status(400).json({
-                    error: 'Product with this SKU already exists'
-                });
-            } else {
-                res.status(400).json({
-                    error: 'Failed to create product',
-                    details: error.message
-                });
-            }
+            res.status(400).json({ error: error.message });
         }
     }
 
@@ -49,14 +37,11 @@ export class ProductController {
      */
     public async getAllProducts(req: Request, res: Response): Promise<void> {
         try {
-            const products = await Product.find({});
+            const products = await this.productService.getAllProducts();
             res.json(products);
         } catch (error: any) {
             console.error('[ProductController] Error getting products:', error);
-            res.status(500).json({
-                error: 'Failed to retrieve products',
-                details: error.message
-            });
+            res.status(500).json({ error: 'Failed to retrieve products' });
         }
     }
 
@@ -65,7 +50,7 @@ export class ProductController {
      */
     public async getProduct(req: Request, res: Response): Promise<void> {
         try {
-            const product = await Product.findById(req.params.id);
+            const product = await this.productService.getProductById(req.params.id);
             if (!product) {
                 res.status(404).json({ error: 'Product not found' });
                 return;
@@ -73,10 +58,7 @@ export class ProductController {
             res.json(product);
         } catch (error: any) {
             console.error('[ProductController] Error getting product:', error);
-            res.status(500).json({
-                error: 'Failed to retrieve product',
-                details: error.message
-            });
+            res.status(500).json({ error: 'Failed to retrieve product' });
         }
     }
 
@@ -85,24 +67,15 @@ export class ProductController {
      */
     public async updateProduct(req: Request, res: Response): Promise<void> {
         try {
-            const product = await Product.findByIdAndUpdate(
-                req.params.id,
-                { $set: req.body },
-                { new: true, runValidators: true }
-            );
-
+            const product = await this.productService.updateProduct(req.params.id, req.body);
             if (!product) {
                 res.status(404).json({ error: 'Product not found' });
                 return;
             }
-
             res.json(product);
         } catch (error: any) {
             console.error('[ProductController] Error updating product:', error);
-            res.status(400).json({
-                error: 'Failed to update product',
-                details: error.message
-            });
+            res.status(400).json({ error: error.message });
         }
     }
 
@@ -111,20 +84,15 @@ export class ProductController {
      */
     public async deleteProduct(req: Request, res: Response): Promise<void> {
         try {
-            const product = await Product.findByIdAndDelete(req.params.id);
-
+            const product = await this.productService.deleteProduct(req.params.id);
             if (!product) {
                 res.status(404).json({ error: 'Product not found' });
                 return;
             }
-
-            res.status(200).send({ message: 'Product deleted successfully' });
+            res.status(200).json({ message: 'Product deleted successfully' });
         } catch (error: any) {
             console.error('[ProductController] Error deleting product:', error);
-            res.status(500).json({
-                error: 'Failed to delete product',
-                details: error.message
-            });
+            res.status(500).json({ error: 'Failed to delete product' });
         }
     }
 
@@ -133,7 +101,7 @@ export class ProductController {
      */
     public async getProductBySku(req: Request, res: Response): Promise<void> {
         try {
-            const product = await Product.findOne({ sku: req.params.sku });
+            const product = await this.productService.getProductBySku(req.params.sku);
             if (!product) {
                 res.status(404).json({ error: 'Product not found' });
                 return;
@@ -141,10 +109,7 @@ export class ProductController {
             res.json(product);
         } catch (error: any) {
             console.error('[ProductController] Error getting product by SKU:', error);
-            res.status(500).json({
-                error: 'Failed to retrieve product',
-                details: error.message
-            });
+            res.status(500).json({ error: 'Failed to retrieve product' });
         }
     }
 
@@ -158,22 +123,11 @@ export class ProductController {
                 res.status(400).json({ error: 'Search term is required' });
                 return;
             }
-
-            const products = await Product.find({
-                $or: [
-                    { name: { $regex: searchTerm, $options: 'i' } },
-                    { sku: { $regex: searchTerm, $options: 'i' } },
-                    { description: { $regex: searchTerm, $options: 'i' } }
-                ]
-            });
-
+            const products = await this.productService.searchProducts(searchTerm);
             res.json(products);
         } catch (error: any) {
             console.error('[ProductController] Error searching products:', error);
-            res.status(500).json({
-                error: 'Failed to search products',
-                details: error.message
-            });
+            res.status(500).json({ error: 'Failed to search products' });
         }
     }
 }

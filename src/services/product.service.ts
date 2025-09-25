@@ -63,4 +63,13 @@ export class ProductService {
     async deleteProduct(id: string): Promise<IProduct | null> {
         return await Product.findByIdAndDelete(id);
     }
+
+    async searchProducts(searchTerm: string): Promise<IProduct[]> {
+        return await Product.find({
+            $or: [
+                { name: { $regex: searchTerm, $options: 'i' } },
+                { sku: { $regex: searchTerm, $options: 'i' } }
+            ]
+        });
+    }
 }
