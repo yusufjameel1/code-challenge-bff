@@ -6,8 +6,7 @@
       "description": "3 for 2 deal on Apple TVs",
       "condition": {
         "minQuantity": 3,
-        "buyQuantity": 3,
-        "getQuantity": 2
+        "payQuantity": 2
       }
     },
     {
@@ -16,7 +15,7 @@
       "description": "Bulk discount on Super iPad",
       "condition": {
         "minQuantity": 5,
-        "newPrice": 499.99
+        "discountedPrice": 499.99
       }
     }
   ]

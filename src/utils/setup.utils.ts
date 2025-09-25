@@ -20,7 +20,7 @@ function transformPricingRule(rule: any) {
                 discountType: DiscountType.BULK_DISCOUNT,
                 conditions: {
                     minQuantity: rule.condition.minQuantity,
-                    discountedPrice: rule.condition.newPrice,
+                    discountedPrice: rule.condition.discountedPrice,
                 },
                 priority: 1,
                 stackable: false,
@@ -35,8 +35,8 @@ function transformPricingRule(rule: any) {
                 skus: [rule.sku],
                 discountType: DiscountType.BUY_X_GET_Y,
                 conditions: {
-                    minQuantity: rule.condition.buyQuantity,
-                    payQuantity: rule.condition.getQuantity,
+                    minQuantity: rule.condition.minQuantity,
+                    payQuantity: rule.condition.payQuantity,
                 },
                 priority: 2,
                 stackable: false,
@@ -68,7 +68,7 @@ function transformPricingRule(rule: any) {
                 discountType: DiscountType.FIXED_PRICE,
                 conditions: {
                     minQuantity: rule.condition.minQuantity,
-                    discountedPrice: rule.condition.fixedPrice,
+                    discountedPrice: rule.condition.discountedPrice,
                 },
                 priority: 4,
                 stackable: false,
