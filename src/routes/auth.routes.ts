@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validateRequest } from '../middleware/validation.middleware';
-import { registerSchema, loginSchema, refreshTokenSchema } from '../schemas/auth.schema';
+import { registerSchema, loginSchema } from '../schemas/auth.schema';
 
 const router = Router();
 const controller = AuthController.getInstance();
@@ -168,6 +168,6 @@ router.post('/login', validateRequest(loginSchema), (req, res) => controller.log
  *       500:
  *         description: Server error
  */
-router.post('/refresh-token', validateRequest(refreshTokenSchema), (req, res) => controller.refreshToken(req, res));
+router.post('/refresh-token', (req, res) => controller.refreshToken(req, res));
 
 export default router;

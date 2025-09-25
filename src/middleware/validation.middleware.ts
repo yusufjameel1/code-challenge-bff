@@ -12,13 +12,8 @@ export const validateRequest = (schema: ZodSchema) => {
             });
 
             if (!result.success) {
-                const fieldPath = result.error.issues[0].path.join('.');
-                if (fieldPath === 'body.refreshToken' && (!body.refreshToken || body.refreshToken === '')) {
-                    return res.status(400).json({ error: 'Refresh token is required' });
-                }
                 return res.status(400).json({ error: result.error.issues[0].message });
             }
-
             req.body = result?.data?.body;
             next();
         } catch (error) {
