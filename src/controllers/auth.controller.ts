@@ -50,7 +50,7 @@ export class AuthController {
     /**
      * Login a user
      */
-    public async login(req: AuthRequest, res: Response): Promise<void> {
+    public async login(req: Request, res: Response): Promise<void> {
         try {
             const { email, password } = req.body;
             const { user, tokens } = await this.authService.login(email, password);
@@ -75,7 +75,7 @@ export class AuthController {
     /**
      * Refresh user's token
      */
-    public async refreshToken(req: AuthRequest, res: Response): Promise<void> {
+    public async refreshToken(req: Request, res: Response): Promise<void> {
         try {
             const { refreshToken } = req.body;
 
