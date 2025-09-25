@@ -8,7 +8,7 @@ export interface IPricingRuleBase {
 
 export interface IPricingRuleDocument extends Document {
     sku: string;
-    type: 'bulk_discount' | 'price_drop' | 'free_product';
+    type: string;
     description: string;
     condition: {
         minQuantity?: number;

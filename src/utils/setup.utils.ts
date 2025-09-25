@@ -12,7 +12,7 @@ function transformPricingRule(rule: any) {
     futureDate.setFullYear(futureDate.getFullYear() + 1);
 
     switch (rule.type) {
-        case 'bulk_discount':
+        case DiscountType.BULK_DISCOUNT:
             return {
                 name: rule.description,
                 description: rule.description,
@@ -28,7 +28,7 @@ function transformPricingRule(rule: any) {
                 endDate: futureDate,
                 isActive: true
             };
-        case 'buy_x_get_y':
+        case DiscountType.BUY_X_GET_Y:
             return {
                 name: rule.description,
                 description: rule.description,
@@ -44,7 +44,7 @@ function transformPricingRule(rule: any) {
                 endDate: futureDate,
                 isActive: true
             };
-        case 'percentage_off':
+        case DiscountType.PERCENTAGE_OFF:
             return {
                 name: rule.description,
                 description: rule.description,
@@ -60,7 +60,7 @@ function transformPricingRule(rule: any) {
                 endDate: futureDate,
                 isActive: true
             };
-        case 'fixed_price':
+        case DiscountType.FIXED_PRICE:
             return {
                 name: rule.description,
                 description: rule.description,

@@ -14,6 +14,8 @@ export const validateRequest = (schema: ZodSchema) => {
             if (!result.success) {
                 return res.status(400).json({ error: result.error.issues[0].message });
             }
+
+            // Replace req.body with the validated data
             req.body = result?.data?.body;
             next();
         } catch (error) {

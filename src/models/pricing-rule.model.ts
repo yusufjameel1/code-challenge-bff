@@ -5,7 +5,6 @@ export enum DiscountType {
     BULK_DISCOUNT = 'BULK_DISCOUNT',
     PERCENTAGE_OFF = 'PERCENTAGE_OFF',
     FIXED_PRICE = 'FIXED_PRICE',
-    PRICE_DROP = 'PRICE_DROP'
 }
 
 export interface IPricingRule extends Document {
@@ -114,7 +113,9 @@ PricingRuleSchema.index({
 PricingRuleSchema.index({
     name: 'text',
     description: 'text'
-});// Validate end date is after start date
+});
+
+// Validate end date is after start date
 PricingRuleSchema.pre('save', function (this: IPricingRule, next) {
     if (this.endDate <= this.startDate) {
         next(new Error('End date must be after start date'));

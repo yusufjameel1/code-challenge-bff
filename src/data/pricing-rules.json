@@ -2,7 +2,7 @@
   "rules": [
     {
       "sku": "atv",
-      "type": "buy_x_get_y",
+      "type": "BUY_X_GET_Y",
       "description": "3 for 2 deal on Apple TVs",
       "condition": {
         "minQuantity": 3,
@@ -12,7 +12,7 @@
     },
     {
       "sku": "ipd",
-      "type": "bulk_discount",
+      "type": "BULK_DISCOUNT",
       "description": "Bulk discount on Super iPad",
       "condition": {
         "minQuantity": 5,
