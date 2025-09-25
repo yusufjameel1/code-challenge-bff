@@ -50,10 +50,8 @@ export default class Checkout {
 
                 if (applicableRulesForOtherGroup.length > 0) {
                     const highestPriorityRule = this.getHighestPriorityRule(applicableRulesForOtherGroup);
-                    const scanSkuItem = this.createScannedItemWithRule(scannedSkuItemsWithoutRule, scannedSkuItemsWithoutRule.quantity, highestPriorityRule);
-
-                    this.scannedItems = this.scannedItems.filter(i => i.sku !== sku && i.rulesApplied && i.rulesApplied.length > 0);
-                    this.scannedItems.push(scanSkuItem);
+                    const scanSkuItem = this.createScannedItemWithRule(item, scannedSkuItemsWithoutRule.quantity, highestPriorityRule);
+                    Object.assign(scannedSkuItemsWithoutRule, scanSkuItem);
                 } else {
                     scannedSkuItemsWithoutRule.rulesApplied = [];
                 }
