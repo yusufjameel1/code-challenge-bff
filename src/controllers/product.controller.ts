@@ -31,10 +31,16 @@ export class ProductController {
             res.status(201).json(product);
         } catch (error: any) {
             console.error('[ProductController] Error creating product:', error);
-            res.status(400).json({
-                error: 'Failed to create product',
-                details: error.message
-            });
+            if (error.code === 11000) {
+                res.status(400).json({
+                    error: 'Product with this SKU already exists'
+                });
+            } else {
+                res.status(400).json({
+                    error: 'Failed to create product',
+                    details: error.message
+                });
+            }
         }
     }
 
@@ -112,7 +118,7 @@ export class ProductController {
                 return;
             }
 
-            res.status(204).send();
+            res.status(200).send({ message: 'Product deleted successfully' });
         } catch (error: any) {
             console.error('[ProductController] Error deleting product:', error);
             res.status(500).json({

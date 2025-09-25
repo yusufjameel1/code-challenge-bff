@@ -1,6 +1,15 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth.middleware';
 import { ProductController } from '../controllers/product.controller';
+import { validateRequest } from '../middleware/validation.middleware';
+import {
+    createProductSchema,
+    updateProductSchema,
+    getProductByIdSchema,
+    getProductBySkuSchema,
+    deleteProductSchema,
+    searchProductsSchema,
+} from '../schemas/product.schema';
 
 const router = Router();
 const productController = ProductController.getInstance();
@@ -88,7 +97,7 @@ router.use(authenticateToken);
  */
 
 
-router.post('/', (req, res) => productController.createProduct(req, res));
+router.post('/', validateRequest(createProductSchema), (req, res) => productController.createProduct(req, res));
 
 /**
  * @swagger
@@ -141,7 +150,7 @@ router.get('/', (req, res) => productController.getAllProducts(req, res));
  *       401:
  *         description: Unauthorized
  */
-router.get('/search', (req, res) => productController.searchProducts(req, res));
+router.get('/search', validateRequest(searchProductsSchema), (req, res) => productController.searchProducts(req, res));
 
 /**
  * @swagger
@@ -170,7 +179,7 @@ router.get('/search', (req, res) => productController.searchProducts(req, res));
  *       401:
  *         description: Unauthorized
  */
-router.get('/:id', (req, res) => productController.getProduct(req, res));
+router.get('/:id', validateRequest(getProductByIdSchema), (req, res) => productController.getProduct(req, res));
 
 /**
  * @swagger
@@ -199,7 +208,7 @@ router.get('/:id', (req, res) => productController.getProduct(req, res));
  *       401:
  *         description: Unauthorized
  */
-router.get('/sku/:sku', (req, res) => productController.getProductBySku(req, res));
+router.get('/sku/:sku', validateRequest(getProductBySkuSchema), (req, res) => productController.getProductBySku(req, res));
 
 /**
  * @swagger
@@ -241,7 +250,7 @@ router.get('/sku/:sku', (req, res) => productController.getProductBySku(req, res
  *       401:
  *         description: Unauthorized
  */
-router.put('/:id', (req, res) => productController.updateProduct(req, res));
+router.put('/:id', validateRequest(updateProductSchema), (req, res) => productController.updateProduct(req, res));
 
 /**
  * @swagger
@@ -266,8 +275,6 @@ router.put('/:id', (req, res) => productController.updateProduct(req, res));
  *       401:
  *         description: Unauthorized
  */
-router.delete('/:id', (req, res) => productController.deleteProduct(req, res));
-
-
+router.delete('/:id', validateRequest(deleteProductSchema), (req, res) => productController.deleteProduct(req, res));
 
 export default router;

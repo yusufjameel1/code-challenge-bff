@@ -7,7 +7,9 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        return res.status(401).json({ error: 'Access token is required' });
+        return res.status(401).json({
+            error: 'Unauthorized'
+        });
     }
 
     try {
