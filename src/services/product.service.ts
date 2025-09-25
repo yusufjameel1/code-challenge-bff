@@ -30,7 +30,7 @@ export class ProductService {
     }
 
     async getAllProducts(): Promise<IProduct[]> {
-        return await Product.find();
+        return await Product.find().lean();
     }
 
     async getProductById(id: string): Promise<IProduct | null> {

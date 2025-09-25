@@ -58,7 +58,7 @@ export class PricingRuleService {
 
             return await PricingRule
                 .find(filter)
-                .sort({ priority: -1, createdAt: -1 });
+                .sort({ priority: -1, createdAt: -1 }).lean();
         } catch (error) {
             console.error('[PricingRuleService] Error getting rules:', error);
             throw error;

@@ -1,7 +1,7 @@
 import { IProduct, IScannedProduct } from './../types/product.types';
 import { DiscountType, IPricingRule } from "../models/pricing-rule.model";
 
-class Checkout {
+export default class Checkout {
     private pricingRules: IPricingRule[];
     private items: IProduct[];
     private scannedItems: IScannedProduct[] = [];
@@ -13,6 +13,10 @@ class Checkout {
 
     public setItems(items: IProduct[]): void {
         this.items = items;
+    }
+
+    public getScannedItems(): IScannedProduct[] {
+        return this.scannedItems;
     }
 
     public scan(sku: string): void {

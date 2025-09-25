@@ -2,15 +2,23 @@ import { Response } from 'express';
 import { OrderService } from '../services/order.service';
 import { AuthRequest } from '../types/request.types';
 import Logger from '../utils/logger.utils';
+import Checkout from '../utils/checkout.util';
+import { PricingRuleService } from '../services/pricing-rule.service';
+import { IPricingRule } from '../models/pricing-rule.model';
+import { ProductService } from '../services/product.service';
 
 const logger = Logger.getInstance();
 
 export class OrderController {
     private static instance: OrderController;
     private orderService: OrderService;
+    private pricingRuleService: PricingRuleService;
+    private productService: ProductService;
 
     private constructor() {
         this.orderService = OrderService.getInstance();
+        this.pricingRuleService = PricingRuleService.getInstance();
+        this.productService = ProductService.getInstance();
     }
 
     public static getInstance(): OrderController {
@@ -25,7 +33,14 @@ export class OrderController {
             const { items, customerName } = req.body;
             const userId = req.user!.userId;
 
-            const order = await this.orderService.createOrder({ userId, customerName, items });
+            // get all active and valid pricing rules from pricing service
+            const pricingRules: IPricingRule[] = await this.pricingRuleService.getAllRules({ isActive: true, currentDate: new Date() });
+            const allProducts = await this.productService.getAllProducts();
+            const products = allProducts.filter(product => items.includes(product.sku));
+            const checkout = new Checkout(pricingRules);
+            checkout.setItems(products);
+            items.forEach((item: string) => checkout.scan(item));
+            const order = await this.orderService.createOrder(items, userId, customerName, checkout.getScannedItems(), checkout.total());
 
             logger.info(`[OrderController] Order created successfully: ${order._id}`);
             res.status(201).json(order);

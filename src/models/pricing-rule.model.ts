@@ -29,7 +29,7 @@ export interface IPricingRule extends Document {
     updatedAt: Date;
 }
 
-const PricingRuleSchema: Schema = new Schema({
+export const PricingRuleSchema: Schema = new Schema<IPricingRule>({
     name: {
         type: String,
         required: true,

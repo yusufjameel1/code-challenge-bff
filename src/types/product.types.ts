@@ -13,7 +13,7 @@ export interface IProductDocument extends Omit<IProduct, '_id'> {
     updatedAt: Date;
 }
 
-export interface IScannedProduct extends IProduct {
+export interface IScannedProduct extends Omit<IProduct, '_id'> {
     quantity: number;
     rulesApplied?: IPricingRule[];
     totalPrice?: number;

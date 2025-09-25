@@ -1,32 +1,13 @@
-export interface IOrderItem {
-    productId: string;
-    sku: string;
-    name: string;
-    originalPrice: number;
-    finalPrice: number;
-    rulesApplied: string[];
-}
-
-export interface IAppliedRule {
-    ruleId: string;
-    ruleName: string;
-    discountType: string;
-    discountAmount: number;
-    appliedToItems: string[];
-}
+import { IScannedProduct } from "./product.types";
 
 export interface IOrder {
     _id?: string;
     userId: string;
     customerName: string;
-    scannedItems: string[];
-    items: IOrderItem[];
-    appliedRules: IAppliedRule[];
-    subtotal: number;
-    totalDiscount: number;
+    scannedItems: IScannedProduct[];
+    items: string[];
     total: number;
     orderDate: Date;
-    status: 'pending' | 'confirmed' | 'cancelled';
 }
 
 export interface IOrderDocument extends Omit<IOrder, '_id'> {
