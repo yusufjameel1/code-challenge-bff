@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
+import { validateRequest } from '../middleware/validation.middleware';
+import { registerSchema, loginSchema, refreshTokenSchema } from '../schemas/auth.schema';
 
 const router = Router();
 const controller = AuthController.getInstance();
@@ -66,14 +68,7 @@ const controller = AuthController.getInstance();
  *       500:
  *         description: Server error
  */
-import { body } from 'express-validator';
-import { validateRequest } from '../middleware/validation.middleware';
-
-router.post('/register', validateRequest([
-    body('name').trim().notEmpty().withMessage('Name is required'),
-    body('email').trim().isEmail().withMessage('Invalid email format'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
-]), (req, res) => controller.register(req, res));
+router.post('/register', validateRequest(registerSchema), (req, res) => controller.register(req, res));
 
 /**
  * @swagger
@@ -126,7 +121,7 @@ router.post('/register', validateRequest([
  *       500:
  *         description: Server error
  */
-router.post('/login', (req, res) => controller.login(req, res));
+router.post('/login', validateRequest(loginSchema), (req, res) => controller.login(req, res));
 
 /**
  * @swagger
@@ -173,6 +168,6 @@ router.post('/login', (req, res) => controller.login(req, res));
  *       500:
  *         description: Server error
  */
-router.post('/refresh-token', (req, res) => controller.refreshToken(req, res));
+router.post('/refresh-token', validateRequest(refreshTokenSchema), (req, res) => controller.refreshToken(req, res));
 
 export default router;
