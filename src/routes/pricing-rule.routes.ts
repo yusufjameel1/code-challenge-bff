@@ -1,6 +1,8 @@
 import express from 'express';
 import { PricingRuleController } from '../controllers/pricing-rule.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
+import { validateRequest } from '../middleware/validation.middleware';
+import { createPricingRuleSchema, updatePricingRuleSchema } from '../schemas/pricing-rule.schema';
 
 const router = express.Router();
 const controller = PricingRuleController.getInstance();
@@ -36,7 +38,7 @@ const controller = PricingRuleController.getInstance();
  *           nullable: true
  *         discountType:
  *           type: string
- *           enum: [BUY_X_GET_Y_FREE, BULK_DISCOUNT, PERCENTAGE_OFF, FIXED_PRICE]
+ *           enum: [BUY_X_GET_Y, BULK_DISCOUNT, PERCENTAGE_OFF, FIXED_PRICE]
  *           description: Type of discount to apply
  *         conditions:
  *           type: object
@@ -48,7 +50,7 @@ const controller = PricingRuleController.getInstance();
  *               description: Minimum quantity required to activate the rule
  *             payQuantity:
  *               type: number
- *               description: For BUY_X_GET_Y_FREE, quantity to pay for
+ *               description: For BUY_X_GET_Y, quantity to pay for
  *             discountedPrice:
  *               type: number
  *               description: For FIXED_PRICE, the discounted price per unit
@@ -120,7 +122,7 @@ router.use(authenticateToken);
  *       500:
  *         description: Server error
  */
-router.get('/search', controller.searchRules.bind(controller));
+router.get('/search', (req, res) => controller.searchRules(req, res));
 
 /**
  * @swagger
@@ -182,8 +184,8 @@ router.get('/search', controller.searchRules.bind(controller));
  *       500:
  *         description: Server error
  */
-router.get('/', controller.getAllRules.bind(controller));
-router.post('/', controller.createRule.bind(controller));
+router.get('/', (req, res) => controller.getAllRules(req, res));
+router.post('/', validateRequest(createPricingRuleSchema), (req, res) => controller.createRule(req, res));
 
 /**
  * @swagger
@@ -262,9 +264,9 @@ router.post('/', controller.createRule.bind(controller));
  *       500:
  *         description: Server error
  */
-router.get('/:id', controller.getRule.bind(controller));
-router.put('/:id', controller.updateRule.bind(controller));
-router.delete('/:id', controller.deleteRule.bind(controller));
+router.get('/:id', (req, res) => controller.getRule(req, res));
+router.put('/:id', validateRequest(updatePricingRuleSchema), (req, res) => controller.updateRule(req, res));
+router.delete('/:id', (req, res) => controller.deleteRule(req, res));
 
 /**
  * @swagger
@@ -293,6 +295,6 @@ router.delete('/:id', controller.deleteRule.bind(controller));
  *       500:
  *         description: Server error
  */
-router.patch('/:id/deactivate', controller.deactivateRule.bind(controller));
+router.patch('/:id/deactivate', (req, res) => controller.deactivateRule(req, res));
 
 export default router;

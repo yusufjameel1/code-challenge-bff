@@ -15,7 +15,7 @@ export interface IPricingRule extends Document {
     discountType: DiscountType;
     conditions: {
         minQuantity: number;
-        payQuantity?: number;    // For BUY_X_GET_Y_FREE
+        payQuantity?: number;    // For BUY_X_GET_Y
         discountedPrice?: number; // For BULK_DISCOUNT or FIXED_PRICE
         percentageOff?: number;   // For PERCENTAGE_OFF
         maxQuantity?: number;     // Optional maximum quantity limit

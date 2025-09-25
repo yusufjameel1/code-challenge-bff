@@ -15,7 +15,7 @@ export async function initializePricingRules() {
                 name: "Apple TV 3 for 2 Deal",
                 description: "Buy 3 Apple TVs, pay for 2 only",
                 skus: ["atv"],
-                discountType: DiscountType.BUY_X_GET_Y_FREE,
+                discountType: DiscountType.BUY_X_GET_Y,
                 conditions: {
                     minQuantity: 3,
                     payQuantity: 2,
