@@ -1,10 +1,11 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export enum DiscountType {
-    BUY_X_GET_Y_FREE = 'BUY_X_GET_Y_FREE',
+    BUY_X_GET_Y = 'BUY_X_GET_Y',
     BULK_DISCOUNT = 'BULK_DISCOUNT',
     PERCENTAGE_OFF = 'PERCENTAGE_OFF',
-    FIXED_PRICE = 'FIXED_PRICE'
+    FIXED_PRICE = 'FIXED_PRICE',
+    PRICE_DROP = 'PRICE_DROP'
 }
 
 export interface IPricingRule extends Document {

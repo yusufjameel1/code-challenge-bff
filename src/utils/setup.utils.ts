@@ -28,17 +28,49 @@ function transformPricingRule(rule: any) {
                 endDate: futureDate,
                 isActive: true
             };
-        case 'free_product':
+        case 'buy_x_get_y':
             return {
                 name: rule.description,
                 description: rule.description,
                 skus: [rule.sku],
-                discountType: DiscountType.BUY_X_GET_Y_FREE,
+                discountType: DiscountType.BUY_X_GET_Y,
                 conditions: {
-                    minQuantity: rule.condition.quantity,
-                    payQuantity: rule.condition.quantity,
+                    minQuantity: rule.condition.buyQuantity,
+                    payQuantity: rule.condition.getQuantity,
                 },
                 priority: 2,
+                stackable: false,
+                startDate: now,
+                endDate: futureDate,
+                isActive: true
+            };
+        case 'percentage_off':
+            return {
+                name: rule.description,
+                description: rule.description,
+                skus: [rule.sku],
+                discountType: DiscountType.PERCENTAGE_OFF,
+                conditions: {
+                    minQuantity: rule.condition.minQuantity,
+                    percentageOff: rule.condition.percentageOff,
+                },
+                priority: 3,
+                stackable: false,
+                startDate: now,
+                endDate: futureDate,
+                isActive: true
+            };
+        case 'fixed_price':
+            return {
+                name: rule.description,
+                description: rule.description,
+                skus: [rule.sku],
+                discountType: DiscountType.FIXED_PRICE,
+                conditions: {
+                    minQuantity: rule.condition.minQuantity,
+                    discountedPrice: rule.condition.fixedPrice,
+                },
+                priority: 4,
                 stackable: false,
                 startDate: now,
                 endDate: futureDate,
