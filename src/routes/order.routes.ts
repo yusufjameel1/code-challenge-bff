@@ -15,38 +15,59 @@ const orderController = OrderController.getInstance();
  * @swagger
  * components:
  *   schemas:
- *     OrderItem:
+ *     ScannedProduct:
  *       type: object
  *       properties:
- *         productId:
- *           type: string
  *         sku:
  *           type: string
+ *           description: Product SKU
  *         name:
  *           type: string
- *         originalPrice:
+ *           description: Product name
+ *         price:
  *           type: number
- *         finalPrice:
+ *           description: Original product price
+ *         quantity:
  *           type: number
+ *           description: Quantity of the product
  *         rulesApplied:
  *           type: array
  *           items:
- *             type: string
- *     AppliedRule:
+ *             $ref: '#/components/schemas/PricingRule'
+ *           description: Applied pricing rules
+ *         totalPrice:
+ *           type: number
+ *           description: Total price after rules (optional)
+ *         modifiedPrice:
+ *           type: number
+ *           description: Modified unit price after rules (optional)
+ *     PricingRule:
  *       type: object
  *       properties:
- *         ruleId:
+ *         _id:
  *           type: string
- *         ruleName:
- *           type: string
- *         discountType:
- *           type: string
- *         discountAmount:
- *           type: number
- *         appliedToItems:
+ *         skus:
  *           type: array
  *           items:
  *             type: string
+ *         discountType:
+ *           type: string
+ *           enum: [BUY_X_GET_Y, BULK_DISCOUNT, PERCENTAGE_OFF, FIXED_PRICE]
+ *         conditions:
+ *           type: object
+ *           properties:
+ *             minQuantity:
+ *               type: number
+ *             payQuantity:
+ *               type: number
+ *             discountedPrice:
+ *               type: number
+ *             percentageOff:
+ *               type: number
+ *         priority:
+ *           type: number
+ *         isActive:
+ *           type: boolean
  *     Order:
  *       type: object
  *       properties:
@@ -56,31 +77,28 @@ const orderController = OrderController.getInstance();
  *           type: string
  *         customerName:
  *           type: string
- *         scannedItems:
- *           type: array
- *           items:
- *             type: string
- *           description: Original list of scanned items as received
  *         items:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/OrderItem'
- *         appliedRules:
+ *             type: string
+ *           description: Original list of scanned item SKUs
+ *         scannedItems:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/AppliedRule'
- *         subtotal:
- *           type: number
- *         totalDiscount:
- *           type: number
+ *             $ref: '#/components/schemas/ScannedProduct'
+ *           description: Processed items with pricing rules applied
  *         total:
  *           type: number
+ *           description: Total order amount
  *         orderDate:
  *           type: string
  *           format: date-time
- *         status:
+ *         createdAt:
  *           type: string
- *           enum: [pending, confirmed, cancelled]
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  */
 
 router.use(authenticateToken);

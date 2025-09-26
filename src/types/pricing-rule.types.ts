@@ -1,5 +1,4 @@
 import { Document } from 'mongoose';
-import { BulkDiscountRule, PriceDropRule, FreeProductRule } from './data.types';
 
 export interface IPricingRuleBase {
     sku: string;

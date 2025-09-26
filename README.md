@@ -35,9 +35,10 @@ A complete backend service for a computer store checkout system built with Node.
 
 ## Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js (v20 or higher)
 - MongoDB (local installation or MongoDB Atlas)
 - Git
+- Docker and Docker Compose (for containerized deployment)
 
 ## Installation
 
@@ -64,6 +65,90 @@ A complete backend service for a computer store checkout system built with Node.
 
 4. **Start MongoDB:**
    Ensure MongoDB is running locally or update `MONGODB_URI` for remote connection.
+
+## Docker Deployment
+
+### Using Docker Compose (Recommended)
+
+1. **Start the application with MongoDB:**
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **View logs:**
+   ```bash
+   docker-compose logs -f
+   ```
+
+3. **Stop the application:**
+   ```bash
+   docker-compose down
+   ```
+
+### Using Docker Only
+
+1. **Build the image:**
+   ```bash
+   docker build -t code-challenge-bff .
+   ```
+
+2. **Run MongoDB:**
+   ```bash
+   docker run -d --name mongodb -p 27017:27017 mongo:7
+   ```
+
+3. **Run the application:**
+   ```bash
+   docker run -d --name app -p 3000:3000 \
+     -e MONGODB_URI=mongodb://host.docker.internal:27017/code-challenge-bff \
+     -e JWT_ACCESS_TOKEN_SECRET=your-super-secret-access-token-key \
+     -e JWT_REFRESH_TOKEN_SECRET=your-super-secret-refresh-token-key \
+     code-challenge-bff
+   ```
+
+### Docker Features
+
+- **Multi-stage build** for optimized production image
+- **Non-root user** for enhanced security
+- **Alpine Linux** base for minimal image size
+- **Volume persistence** for MongoDB data
+- **Health checks** and automatic restarts
+
+### Access the Application
+
+Once running with Docker:
+- **API:** http://localhost:3000
+- **Swagger UI:** http://localhost:3000/api-docs
+- **MongoDB:** localhost:27017
+
+### Docker Compose API Examples
+
+After running `docker-compose up -d`, test the API:
+
+1. **Register a user:**
+   ```bash
+   curl -X POST http://localhost:3000/api/auth/register \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Docker User","email":"docker@example.com","password":"password123"}'
+   ```
+
+2. **Login and get token:**
+   ```bash
+   curl -X POST http://localhost:3000/api/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"email":"docker@example.com","password":"password123"}'
+   ```
+
+3. **Create an order:**
+   ```bash
+   curl -X POST http://localhost:3000/api/orders \
+     -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"customerName":"Docker User","items":["ipd","atv"]}'
+   ```
+
+4. **Access Swagger UI:**
+   Open http://localhost:3000/api-docs in your browser for interactive API testing
 
 ## Available Scripts
 
@@ -112,6 +197,8 @@ A complete backend service for a computer store checkout system built with Node.
    ```
 
 ## API Endpoints
+
+> **Note:** Most APIs are protected and require authentication. You must first register a user using the `/api/auth/register` endpoint (via cURL or Swagger UI) to obtain an access token for accessing protected endpoints.
 
 ### Authentication
 - `POST /api/auth/register` - Register new user
