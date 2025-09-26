@@ -6,6 +6,8 @@ import { Product } from '../src/models/product.model';
 import { User } from '../src/models/user.model';
 import { generateTokens } from '../src/utils/jwt.utils';
 import './setup';
+import setupUtils from '../src/utils/setup.utils';
+
 
 describe('Order Routes', () => {
     let accessToken: string;
@@ -33,11 +35,7 @@ describe('Order Routes', () => {
 
     beforeEach(async () => {
         await Order.deleteMany({});
-        await Product.insertMany([
-            { sku: 'ipd', name: 'Super iPad', price: 549.99 },
-            { sku: 'atv', name: 'Apple TV', price: 109.5 },
-            { sku: 'vga', name: 'VGA adapter', price: 30.0 }
-        ]);
+        await setupUtils.initializeData();
     });
 
     afterAll(async () => {
@@ -101,6 +99,34 @@ describe('Order Routes', () => {
                 .post('/api/orders')
                 .set('Authorization', `Bearer ${accessToken}`)
                 .send({ customerName: 'John Doe', items: ['ipd', 'atv'] })
+                .expect(201);
+
+            expect(response.body).toHaveProperty('_id');
+            expect(response.body).toHaveProperty('userId', userId);
+            expect(response.body).toHaveProperty('customerName', 'John Doe');
+            expect(response.body).toHaveProperty('total');
+            expect(response.body.total).toBeGreaterThan(0);
+        });
+
+        it('should create order successfully with more valid data', async () => {
+            const response = await request(app)
+                .post('/api/orders')
+                .set('Authorization', `Bearer ${accessToken}`)
+                .send({ customerName: 'John Doe', items: ['atv', 'atv', 'atv', 'ipd', 'ipd', 'atv'] })
+                .expect(201);
+
+            expect(response.body).toHaveProperty('_id');
+            expect(response.body).toHaveProperty('userId', userId);
+            expect(response.body).toHaveProperty('customerName', 'John Doe');
+            expect(response.body).toHaveProperty('total');
+            expect(response.body.total).toBeGreaterThan(0);
+        });
+
+        it('should create order successfully with multiple rules applied with valid data', async () => {
+            const response = await request(app)
+                .post('/api/orders')
+                .set('Authorization', `Bearer ${accessToken}`)
+                .send({ customerName: 'John Doe', items: ['atv', 'atv', 'atv', 'ipd', 'ipd', 'atv', 'atv', 'atv'] })
                 .expect(201);
 
             expect(response.body).toHaveProperty('_id');
