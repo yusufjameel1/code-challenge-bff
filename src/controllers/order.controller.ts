@@ -73,7 +73,7 @@ export class OrderController {
             }
 
             // Check if user owns the order
-            if (order.userId !== req.user!.userId) {
+            if (order.userId.toString() !== req.user!.userId) {
                 res.status(403).json({ error: 'Access denied' });
                 return;
             }
@@ -81,32 +81,6 @@ export class OrderController {
             res.status(200).json(order);
         } catch (error: any) {
             logger.error('[OrderController] Error fetching order:', error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    }
-
-    async updateOrderStatus(req: AuthRequest, res: Response): Promise<void> {
-        try {
-            const { id } = req.params;
-            const { status } = req.body;
-
-            const order = await this.orderService.getOrderById(id);
-            if (!order) {
-                res.status(404).json({ error: 'Order not found' });
-                return;
-            }
-
-            if (order.userId !== req.user!.userId) {
-                res.status(403).json({ error: 'Access denied' });
-                return;
-            }
-
-            const updatedOrder = await this.orderService.updateOrderStatus(id, status);
-
-            logger.info(`[OrderController] Order status updated: ${id} -> ${status}`);
-            res.status(200).json(updatedOrder);
-        } catch (error: any) {
-            logger.error('[OrderController] Error updating order status:', error);
             res.status(500).json({ error: 'Internal server error' });
         }
     }
@@ -121,7 +95,7 @@ export class OrderController {
                 return;
             }
 
-            if (order.userId !== req.user!.userId) {
+            if (order.userId.toString() !== req.user!.userId) {
                 res.status(403).json({ error: 'Access denied' });
                 return;
             }

@@ -18,15 +18,6 @@ export const getOrderByIdSchema = z.object({
     })
 });
 
-export const updateOrderStatusSchema = z.object({
-    params: z.object({
-        id: objectIdSchema
-    }),
-    body: z.object({
-        status: z.enum(['pending', 'confirmed', 'cancelled'])
-    })
-});
-
 export const deleteOrderSchema = z.object({
     params: z.object({
         id: objectIdSchema

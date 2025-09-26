@@ -5,7 +5,6 @@ import { validateRequest } from '../middleware/validation.middleware';
 import {
     createOrderSchema,
     getOrderByIdSchema,
-    updateOrderStatusSchema,
     deleteOrderSchema
 } from '../schemas/order.schema';
 
@@ -178,47 +177,6 @@ router.get('/', (req, res) => orderController.getAllOrders(req, res));
  *         description: Unauthorized
  */
 router.get('/:id', validateRequest(getOrderByIdSchema), (req, res) => orderController.getOrder(req, res));
-
-/**
- * @swagger
- * /api/orders/{id}/status:
- *   patch:
- *     summary: Update order status
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: Order ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               status:
- *                 type: string
- *                 enum: [pending, confirmed, cancelled]
- *     responses:
- *       200:
- *         description: Order status updated
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Order'
- *       404:
- *         description: Order not found
- *       403:
- *         description: Access denied
- *       401:
- *         description: Unauthorized
- */
-router.patch('/:id/status', validateRequest(updateOrderStatusSchema), (req, res) => orderController.updateOrderStatus(req, res));
 
 /**
  * @swagger
