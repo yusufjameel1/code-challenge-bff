@@ -77,6 +77,7 @@ A complete backend service for a computer store checkout system built with Node.
 | | `npm run test:coverage` | Run tests with coverage report |
 | **Code Quality** | `npm run lint` | Run ESLint |
 | | `npm run lint:fix` | Fix ESLint errors automatically |
+| **Git Hooks** | `npm run prepare` | Initialize husky git hooks |
 
 ## Quick Start
 
@@ -227,6 +228,7 @@ src/
    - ESLint for code linting
    - Prettier for code formatting
    - TypeScript for type safety
+   - Pre-commit hooks with Husky to lint code before commits
 
 2. **Database:**
    - MongoDB with Mongoose ODM
