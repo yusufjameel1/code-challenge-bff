@@ -335,6 +335,10 @@ src/
 4. Push to branch: `git push origin feature/new-feature`
 5. Submit pull request
 
+## Author
+
+Yusuf Jameel
+
 ## License
 
 ISC
