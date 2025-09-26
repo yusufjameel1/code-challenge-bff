@@ -1,15 +1,15 @@
-import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
 import dotenv from 'dotenv';
+import express, { NextFunction, Request, Response } from 'express';
+import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
-import authRoutes from './routes/auth.routes';
-import productRoutes from './routes/product.routes';
-import pricingRuleRoutes from './routes/pricing-rule.routes';
-import orderRoutes from './routes/order.routes';
-import { authenticateToken } from './middleware/auth.middleware';
 import { swaggerSpec } from './config/swagger.config';
-import setupUtils from './utils/setup.utils';
+import { authenticateToken } from './middleware/auth.middleware';
+import { loggingMiddleware } from './middleware/logging.middleware';
+import authRoutes from './routes/auth.routes';
+import orderRoutes from './routes/order.routes';
+import pricingRuleRoutes from './routes/pricing-rule.routes';
+import productRoutes from './routes/product.routes';
 
 // Load environment variables
 dotenv.config();
@@ -21,6 +21,7 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(loggingMiddleware);
 
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {

@@ -42,10 +42,9 @@ export class OrderController {
             items.forEach((item: string) => checkout.scan(item));
             const order = await this.orderService.createOrder(items, userId, customerName, checkout.getScannedItems(), checkout.total());
 
-            logger.info(`[OrderController] Order created successfully: ${order._id}`);
             res.status(201).json(order);
         } catch (error: any) {
-            logger.error('[OrderController] Error creating order:', error);
+            logger.error(`[OrderController] Error creating order: ${error.message}`);
             res.status(400).json({ error: error.message });
         }
     }
@@ -57,7 +56,7 @@ export class OrderController {
 
             res.status(200).json(orders);
         } catch (error: any) {
-            logger.error('[OrderController] Error fetching orders:', error);
+            logger.error(`[OrderController] Error fetching orders: ${error.message}`);
             res.status(500).json({ error: 'Internal server error' });
         }
     }
@@ -80,7 +79,7 @@ export class OrderController {
 
             res.status(200).json(order);
         } catch (error: any) {
-            logger.error('[OrderController] Error fetching order:', error);
+            logger.error(`[OrderController] Error fetching order: ${error.message}`);
             res.status(500).json({ error: 'Internal server error' });
         }
     }
@@ -102,10 +101,9 @@ export class OrderController {
 
             await this.orderService.deleteOrder(id);
 
-            logger.info(`[OrderController] Order deleted: ${id}`);
             res.status(200).json({ message: 'Order deleted successfully' });
         } catch (error: any) {
-            logger.error('[OrderController] Error deleting order:', error);
+            logger.error(`[OrderController] Error deleting order: ${error.message}`);
             res.status(500).json({ error: 'Internal server error' });
         }
     }
